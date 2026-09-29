@@ -87,13 +87,17 @@ class ChatbotEvaluationRun:
     is_faithful: bool = True
     judge_reasoning: str = ""
 
+from .guardrails import AIGuardrailService
+
 class ChatbotEvaluatorService:
     """
     Serviço central de avaliação e benchmarking de LLMs.
-    Combina análise quantitativa de telemetria (custo/latência) e qualitativa (LLM-as-a-Judge).
+    Combina análise quantitativa de telemetria (custo/latência), qualitativa (LLM-as-a-Judge)
+    e checagem de conformidade de segurança (Guardrails de PII e Prompt Injection).
     """
     def __init__(self, pricing_table: Dict[str, Dict[str, Any]] = MODEL_PRICING_TABLE):
         self.pricing_table = pricing_table
+        self.guardrail = AIGuardrailService()
 
     def compute_cost(self, model: str, input_tokens: int, output_tokens: int) -> float:
         """Calcula o custo exato da inferência em dólares."""
@@ -104,13 +108,16 @@ class ChatbotEvaluatorService:
 
     def judge_evaluation(self, run: ChatbotEvaluationRun, expected_keys: List[str], prohibited_keys: List[str]) -> Dict[str, Any]:
         """
-        Simulador do motor de LLM-as-a-Judge com cadeia de raciocínio (Chain of Thought).
-        Avalia fidelidade, relevância e completude segundo rubricas formais.
+        Simulador do motor de LLM-as-a-Judge com cadeia de raciocínio (Chain of Thought)
+        integrado com inspeção de Guardrails.
         """
         ans_lower = run.answer.lower()
         ctx_lower = run.context.lower()
 
-        # 1. Avaliação de Fidelidade (Faithfulness) / Detecção de Alucinação
+        # 1. Inspeção de Guardrails (Segurança e PII)
+        guard_res = self.guardrail.inspect(run.answer)
+
+        # 2. Avaliação de Fidelidade (Faithfulness) / Detecção de Alucinação
         has_hallucination = False
         hallucination_reason = []
         for bad_key in prohibited_keys:
@@ -118,7 +125,11 @@ class ChatbotEvaluatorService:
                 has_hallucination = True
                 hallucination_reason.append(f"termo proibido/alucinado '{bad_key}'")
 
-        if has_hallucination:
+        if not guard_res.is_safe:
+            faithfulness = 1.0
+            is_faithful = False
+            r_faith = f"BLOQUEADO POR GUARDRAILS: {'; '.join(guard_res.reasons)}"
+        elif has_hallucination:
             faithfulness = 1.0
             is_faithful = False
             r_faith = f"REPROVADO POR ALUCINAÇÃO: O modelo introduziu {', '.join(hallucination_reason)} não respaldado pelo contexto oficial."
@@ -127,7 +138,7 @@ class ChatbotEvaluatorService:
             is_faithful = True
             r_faith = "APROVADO: Nenhuma alucinação detectada; resposta ancorada no contexto."
 
-        # 2. Avaliação de Relevância e Completude (Coverage dos requisitos)
+        # 3. Avaliação de Relevância e Completude (Coverage dos requisitos)
         matched_keys = [k for k in expected_keys if k.lower() in ans_lower]
         coverage_pct = len(matched_keys) / max(1, len(expected_keys))
 
@@ -144,8 +155,8 @@ class ChatbotEvaluatorService:
             relevance = 2.5
             r_comp = "Resposta evasiva ou insuficiente para a dúvida apresentada."
 
-        # Se houver alucinação grave, a nota geral cai drasticamente
-        if not is_faithful:
+        # Se houver alucinação grave ou quebra de guardrail, a nota geral cai drasticamente
+        if not is_faithful or not guard_res.is_safe:
             overall = 1.0
         else:
             overall = round((faithfulness * 0.4) + (relevance * 0.3) + (completeness * 0.3), 1)
@@ -158,6 +169,7 @@ class ChatbotEvaluatorService:
             "completeness": completeness,
             "overall": overall,
             "is_faithful": is_faithful,
+            "guardrail_status": "🚨 Risco Crítico" if not guard_res.is_safe else ("⚠️ Risco Médio (PII)" if guard_res.detected_pii else "✅ Conforme"),
             "reasoning": full_reasoning
         }
 
@@ -198,6 +210,7 @@ class ChatbotEvaluatorService:
                 "Relevância (1-5)": judge_result["relevance"],
                 "Completude (1-5)": judge_result["completeness"],
                 "Sem Alucinação?": "Sim" if judge_result["is_faithful"] else "Não",
+                "Segurança / Guardrails": judge_result["guardrail_status"],
                 "Latência (ms)": lat,
                 "Tokens (In/Out)": f"{in_tok} / {out_tok}",
                 "Custo Unitário (USD)": cost,
