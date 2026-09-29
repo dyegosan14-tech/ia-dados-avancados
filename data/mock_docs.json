@@ -1,0 +1,38 @@
+[
+  {
+    "id": "DOC-RH-001",
+    "titulo": "Política de Férias e Descanso Remunerado",
+    "categoria": "Recursos Humanos",
+    "conteudo": "Todo colaborador com contrato CLT adquire direito a 30 dias de férias após cada período de 12 meses de vigência do contrato de trabalho. O fracionamento das férias pode ser feito em até 3 períodos, mediante concordância do empregado, sendo que um deles não poderá ser inferior a 14 dias corridos e os demais não poderão ser inferiores a 5 dias corridos cada um. A solicitação formal deve ser registrada no portal de RH com antecedência mínima de 45 dias."
+  },
+  {
+    "id": "DOC-FIN-002",
+    "titulo": "Diretrizes de Reembolso de Despesas Corporativas",
+    "categoria": "Financeiro",
+    "conteudo": "As despesas realizadas em viagens corporativas, incluindo alimentação, hospedagem e deslocamento urbano, serão ressarcidas mediante apresentação de nota fiscal ou cupom fiscal válido. O limite diário para refeições é de R$ 85,00 por colaborador em capitais e R$ 65,00 em cidades do interior. O prazo máximo para submissão do relatório de despesas com os respectivos comprovantes anexados é de 30 dias corridos a partir da data de término do evento ou viagem."
+  },
+  {
+    "id": "DOC-TI-003",
+    "titulo": "Política de Segurança da Informação e Acesso Remoto",
+    "categoria": "Tecnologia",
+    "conteudo": "O acesso à rede interna corporativa e a sistemas em nuvem restritos deve ser realizado obrigatoriamente através da VPN homologada com autenticação em dois fatores (MFA). É estritamente proibido o compartilhamento de credenciais de acesso, bem como a conexão de dispositivos pessoais não autorizados à rede de produção. Incidentes de segurança cibernética ou suspeitas de vazamento de dados devem ser reportados imediatamente ao time de SOC no canal de emergência."
+  },
+  {
+    "id": "DOC-COM-004",
+    "titulo": "Condições Comerciais e Política de Descontos",
+    "categoria": "Comercial",
+    "conteudo": "Os consultores de vendas têm autonomia para conceder descontos de até 7% em contratos anuais com pagamento à vista. Descontos entre 7,1% e 15% requerem aprovação prévia do Gerente Regional de Vendas via workflow no CRM. Descontos superiores a 15% ou condições especiais de pagamento com carência superior a 60 dias necessitam de chancela formal do Diretor Comercial e do CFO."
+  },
+  {
+    "id": "DOC-JUR-005",
+    "titulo": "Cláusulas de Confidencialidade e Proteção de Dados (LGPD)",
+    "categoria": "Jurídico",
+    "conteudo": "Todos os dados pessoais de clientes, fornecedores e parceiros coletados pela empresa devem possuir base legal expressa conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018). As informações confidenciais compartilhadas sob acordos de NDA permanecem sob obrigação de sigilo durante a vigência do contrato e pelo período adicional de 5 anos após a rescisão contratual."
+  },
+  {
+    "id": "DOC-ENG-006",
+    "titulo": "Processo de Deploy e Integração Contínua (CI/CD)",
+    "categoria": "Engenharia",
+    "conteudo": "Todas as alterações de código para o ambiente de produção exigem aprovação de pelo menos dois revisores técnicos seniores (Pull Request Review). O pipeline automatizado executa suíte de testes unitários com cobertura mínima de 80%, análise estática de segurança (SAST) e verificação de vulnerabilidades em dependências. Deploys em produção são restritos à janela de segunda a quinta-feira entre 09:00 e 15:00."
+  }
+]

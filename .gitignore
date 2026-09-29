@@ -1,0 +1,22 @@
+# Ambientes virtuais
+venv/
+.env/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDEs e editores
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Streamlit
+.streamlit/
+
+# Dados temporários
+*.db
+*.sqlite
+*.log
