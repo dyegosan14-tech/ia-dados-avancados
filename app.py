@@ -141,7 +141,11 @@ with st.sidebar:
     st.markdown("- **Engine**: Python 3.9+ / Streamlit")
     st.markdown("- **Vector/ML**: Scikit-Learn & LSA")
     st.markdown("- **Analytics**: DuckDB In-Memory")
-    st.caption("Pronto para deploy e versionamento no GitHub.")
+    
+    st.divider()
+    st.markdown("👨‍💻 **Desenvolvido por:**")
+    st.markdown("[**Dyego Assis** (@dyegosan14-tech)](https://github.com/dyegosan14-tech)")
+    st.caption("Repositório público no GitHub")
 
 # ==============================================================================
 # MÓDULO 4: AVALIADOR DE CHATBOTS (LLM-AS-A-JUDGE) - DESTAQUE PRINCIPAL
